@@ -67,7 +67,7 @@ const Presentation = (props) => {
               </Link>
             </Grid>
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link href="register" variant="body2">
                 {"Crear una cuenta"}
               </Link>
             </Grid>
