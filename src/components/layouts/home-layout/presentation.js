@@ -21,8 +21,12 @@ const Presentation = (props) => {
             <Typography variant="h4" display="inline">
               LOGO
             </Typography>
-            <Button color="inherit">Materias</Button>
-            <Button color="inherit">Perfil</Button>
+            <Button color="inherit" href="/home">
+              Materias
+            </Button>
+            <Button color="inherit" href="/profile">
+              Perfil
+            </Button>
           </div>
           <IconButton color="inherit">
             <NotificationIcon />
