@@ -8,6 +8,7 @@ import {
   Tab,
   Tabs,
   Typography,
+  Hidden,
 } from "@material-ui/core";
 import { History, Star } from "@material-ui/icons";
 import profileStyles from "./styles";
@@ -34,7 +35,11 @@ const Presentation = (props) => {
             </Tabs>
           </AppBar>
           <TabPanel value={props.activeTab} index={0}>
-            <Typography>Sin reuniones por el momento.</Typography>
+            {props.meetings.length > 0 ? (
+              props.meetings.map((meeting) => <MeetingCard data={meeting} />)
+            ) : (
+              <Typography>Sin reuniones por el momento.</Typography>
+            )}
           </TabPanel>
           <TabPanel value={props.activeTab} index={1}>
             <Typography>Sin recomendaciones por el momento.</Typography>
@@ -56,6 +61,38 @@ const ProfileCard = () => {
       <Typography>Ingeniería en Sistemas de Información</Typography>
     </Paper>
   );
+};
+
+const MeetingCard = ({ data }) => {
+  const classes = profileStyles();
+  return (
+    <Paper>
+      <div className={classes.meetingCard}>
+        <Hidden mdDown>
+          <Avatar
+            className={classes.meetingAvatar}
+            style={{ backgroundColor: randomColor() }}
+          >
+            {data.subject.charAt(0)}
+          </Avatar>
+        </Hidden>
+        <div className={classes.meetingInfo}>
+          <Typography>
+            <b>{data.subject}</b>
+          </Typography>
+          <Typography>{data.user}</Typography>
+        </div>
+        <Typography className={classes.meetingDate}>
+          {data.date.getDate()}/{data.date.getMonth()}/{data.date.getFullYear()}
+        </Typography>
+      </div>
+    </Paper>
+  );
+};
+
+const randomColor = () => {
+  let hex = Math.floor(Math.random() * 0xffffff);
+  return "#" + hex.toString(16);
 };
 
 export default Presentation;
