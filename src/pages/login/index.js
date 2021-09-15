@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import Presentation from "./Login";
 import { firebaseAuth } from "../../config/firebase";
+import { useHistory } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [signedIn, setSignedIn] = useState(false);
+  const history = useHistory();
 
   const login = async (event) => {
     event.preventDefault();
@@ -16,6 +18,8 @@ const Login = () => {
       );
 
       if (userCredentials) {
+        localStorage.setItem("user_id", userCredentials.user.uid);
+        history.push("/home");
         setSignedIn(true);
       }
     } catch (error) {

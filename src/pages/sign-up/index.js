@@ -43,6 +43,7 @@ const SignUp = () => {
                   career: null,
                 })
                 .then((doc) => {
+                  localStorage.setItem("user_id", userCredentials.user.uid);
                   history.push("/home");
                 })
                 .catch((err) => {
