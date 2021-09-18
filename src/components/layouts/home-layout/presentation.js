@@ -9,6 +9,7 @@ import {
 } from "@material-ui/core";
 import NotificationIcon from "@material-ui/icons/Notifications";
 import useStyle from "./styles";
+import DeviceHub from '@material-ui/icons/DeviceHub'
 
 const Presentation = (props) => {
   const classes = useStyle();
@@ -19,7 +20,7 @@ const Presentation = (props) => {
         <Toolbar className={classes.toolbar}>
           <div>
             <Typography variant="h4" display="inline">
-              LOGO
+              <DeviceHub fontSize="large" />
             </Typography>
             <Button color="inherit">Materias</Button>
             <Button color="inherit">Perfil</Button>
