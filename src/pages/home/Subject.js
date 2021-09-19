@@ -1,127 +1,161 @@
 import React,{useState} from 'react';
-import {Paper, IconButton, Tooltip} from '@material-ui/core';
-import {Visibility, PersonAdd, PersonAddDisabled} from '@material-ui/icons';
+import { Chip, IconButton, Tooltip } from '@material-ui/core';
+import {PersonAdd, PersonAddDisabled} from '@material-ui/icons';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { makeStyles } from '@material-ui/core/styles';
-import MaterialModal from "../modalUsers/Modal";
-import {firestore} from "../../config/firebase";
+import { firestore } from "../../config/firebase";
 
 const useStyles = makeStyles((theme) => ({
     root: {
       width: '100%',
+      marginTop: '10px',
+      marginBottom: '25px',
     },
     heading: {
       fontSize: theme.typography.pxToRem(15),
-      fontWeight: theme.typography.fontWeightRegular,
+      fontWeight: theme.typography.fontWeightBold,
+    },
+    accordion: {
+        backgroundColor: 'whiteSmoke'
+    },
+    accordionDetails: {
+        display: 'flex',
+        flex: 1,
+        flexDirection: 'column',
+    },
+    userDetails: {
+        display: 'flex',
+        flex: 1
+    },
+    accordionDetailsHeader: {        
+        display: 'flex',
+        justifyContent: 'space-between'
+    },
+    chip: {
+        marginRight: '5px'
+    },
+    chipLCC: {
+        backgroundColor: '#90caf9'
+    },
+    chipISI: {
+        backgroundColor: '#ffecb3'
+    },
+    chipIC: {
+        backgroundColor: '#e57373'
     },
   }));
 
-const Subject = ({subject,getUsers}) => {
+const Subject = ({subject,getUsers}) => {    
     const [isToggleOn, setToggleOn] = useState(true);
-    const [open, setOpen] = useState(false);
-    const [usersBySubject,setUsersBySubject] = useState([]);
-    const [totalUsersBySubject, setTotalUsersBySubject] = useState(0);
+    const [usersBySubject,setUsersBySubject] = useState(undefined);    
 
-
-    const handleClickOpen = () => {
-        setOpen(true);
+    const handleClickModal = () => {        
+        getUsers(subject.key).then(
+            users => setUsersBySubject(users)
+        );
     }
-
-    const handleClose = () => {
-        setOpen(false);
-    }
-
 
     const classes = useStyles();
-
-    async function handleModal(cod){
-        const getUsersBySubject = [];
-        const subjectsRef = firestore.collection('Subjects');
-        const snapshot = await subjectsRef.where('code', '==', cod).get();
-             
-            snapshot.forEach(doc => {
-            const usersRef = doc.ref
-                .collection('UsersAdded')
-                .onSnapshot((querySnapShot) => {
-                    querySnapShot.forEach((docUser) => {
-                        getUsersBySubject.push({...docUser.data(), key: docUser.id});
-                    });
-            });
-           setUsersBySubject(getUsersBySubject)
-           setTotalUsersBySubject(getUsersBySubject.length)
-           console.log(getUsersBySubject)
-           console.log(getUsersBySubject.length)
-        })
-        
-    }
     
-    function handleClick(cod){
+    const handleClick = () => {
+        const loggedUser = {
+            firstName: "coti",
+            lastName: "giorgetti",
+            email: "coti.malibu2@gmail.com"
+        };
+
         if(isToggleOn){
-            addUser(cod)
+            addUser(subject.key, loggedUser)
         }
         else { 
-            deleteUser(cod)
+            deleteUser(subject.key, loggedUser)
         }
         setToggleOn(!isToggleOn);
     }
 
-    async function addUser(cod){
-        const subjectsRef = firestore.collection('Subjects');
-        const snapshot = await subjectsRef.where('code', '==', cod).get();
-        snapshot.forEach(doc => {
-            console.log(doc.id, '=>', doc.data());
-            doc.ref.collection('UsersAdded')
-                    .add({
-                        firstName: "coti",
-                        lastName: "giorgetti",
-                        email: "coti.giorgetti2@gmail.com"
-                    })
-        });
+    const addUser = (subjectId, user) => {        
+        firestore.collection('Subjects').doc(subjectId).get().then(
+            doc => doc.ref.collection('UsersAdded').add(user)
+        );
+        
+        if (usersBySubject) {
+            usersBySubject.push({...user});
+        }
+        else {
+            setUsersBySubject([{...user}]);
+        }
     }
 
-    async function deleteUser(cod) {
-        const subjectsRef = firestore.collection('Subjects');
-        const snapshot = await subjectsRef.where('code', '==', cod).get();
-        snapshot.forEach(async (doc) => {
-            const usersRef = doc.ref.collection('UsersAdded');
-            const userDocs = await usersRef.where('email', '==', 'coti.giorgetti2@gmail.com').get();
-            userDocs.forEach(userDoc => {
-                userDoc.ref.delete();
-            })
-        })
+    const deleteUser = (subjectId, user) => {
+        firestore.collection('Subjects').doc(subjectId).get().then(
+            doc => {
+                doc.ref.collection('UsersAdded').where('email', '==', user.email).get().then(
+                    users => users.forEach(u => u.ref.delete())
+                );                
+            }
+        );
+
+        if (usersBySubject) {
+            const filteredUsers = usersBySubject.filter(u => u.email !== user.email);
+
+            if (filteredUsers.length >= 0) {
+                setUsersBySubject(filteredUsers);
+            }
+        }        
     }
   
     return(
         <div className={classes.root}>
-            <IconButton onClick={() => handleClick(subject.code)} color="inherit">
-                        {isToggleOn ? 
-                        <Tooltip title="Postularme" placement="top-start">
-                            <PersonAdd />
-                        </Tooltip> : 
-                        <Tooltip title="Quitar postulacion" placement="top-start">
-                            <PersonAddDisabled />
-                        </Tooltip>}
+            <Accordion className={classes.accordion}>
+                <AccordionSummary
+                        expandIcon={<ExpandMoreIcon/>}
+                        onClick={handleClickModal}
+                        aria-controls="panel1a-content"
+                        id="panel1a-header"
+                    >
+                    <Typography className={classes.heading}>{subject.name} - (Cod: {subject.code})</Typography>
+                </AccordionSummary>
+                <hr/>
+                <AccordionDetails className={classes.accordionDetails}>
+                    <div className={classes.accordionDetailsHeader}>
+                        <div className={classes.chips}>                            
+                            {subject.careers.map(career => <Chip label={career === 1 ? 'LCC' : career === 2 ? 'ISI' : 'IC'} className={[classes.chip, career === 1 ? classes.chipLCC : career === 2 ? classes.chipISI : classes.chipIC]}/>)}                        
+                        </div>
+                        <IconButton onClick={handleClick} color="inherit">
+                            {isToggleOn ? 
+                            <Tooltip title="Postularme" placement="top-start">
+                                <PersonAdd />
+                            </Tooltip> : 
+                            <Tooltip title="Quitar postulacion" placement="top-start">
+                                <PersonAddDisabled />
+                            </Tooltip>}
                         </IconButton>
-            <Accordion>
-            <AccordionSummary
-                    expandIcon={<ExpandMoreIcon/>}
-                    onClick={() => getUsers(subject.code)}
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
-                >
-                <Typography className={classes.heading}>{subject.name} - (Cod: {subject.code})</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-                <Typography>
-
-                </Typography>
-            </AccordionDetails>
+                    </div>
+                    <Typography>
+                        {usersBySubject ? 
+                            usersBySubject.length > 0  
+                                ? <ul>{usersBySubject.map(user => <li><User user={user} /></li>)}</ul>
+                                : "No hay alumnos"
+                            : 'Cargando...'
+                        }
+                    </Typography>
+                </AccordionDetails>
         </Accordion>
     </div>
+    )
+}
+
+const User = ({user}) => {
+    const classes = useStyles();
+
+    return (
+        <Typography className={classes.userDetails}>
+            {user.firstName} {user.lastName} {user.email}
+        </Typography> 
     )
 }
 

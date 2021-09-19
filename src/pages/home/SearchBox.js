@@ -13,11 +13,13 @@ const SearchBox = ({searchQuery, setSearchQuery}) => {
     return (
         <form action="/" method="get" onSubmit={onSubmit}>
                 <TextField 
+                    margin="normal"
+                    size="medium"
                     value={searchQuery}
                     onInput={(e) => setSearchQuery(e.target.value)}
                     name="s"
                     id="search" 
-                    placeholder="Buscar..." 
+                    placeholder="Buscar por nombre..." 
                     InputProps={{
                         endAdornment: (
                             <InputAdornment position="end">
@@ -25,6 +27,7 @@ const SearchBox = ({searchQuery, setSearchQuery}) => {
                             </InputAdornment>
                         ),
                     }}
+                    style={{width: '500px'}}
                 />
             </form>
 

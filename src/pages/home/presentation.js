@@ -19,14 +19,16 @@ const Presentation = (subjects) => {
     const [searchQuery, setSearchQuery] = useState(query || '');
     const filteredSubjects = filterSubjects(subjects, searchQuery);
 
-    return (<div>
-        <SearchBox
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-        />
-        <br />
-        <Subjects  filteredSubjects={filteredSubjects}/>
-    </div>)
+    return (
+        <div>
+            <SearchBox
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+            />
+            <br />
+            <Subjects filteredSubjects={filteredSubjects}/>
+        </div>
+    )
 }
 
 export default Presentation;
