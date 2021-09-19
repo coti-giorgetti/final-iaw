@@ -24,7 +24,15 @@ const SignUp = () => {
         password
       );
 
+      const userDetails = {
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        career: null,
+      };
+
       if (userCredentials && userCredentials.additionalUserInfo.isNewUser) {
+        userDetails.id = userCredentials.user.uid;
         firestore
           .collection("Users")
           .doc(userCredentials.user.uid)
@@ -36,14 +44,9 @@ const SignUp = () => {
               firestore
                 .collection("Users")
                 .doc(userCredentials.user.uid)
-                .set({
-                  firstName: firstName,
-                  lastName: lastName,
-                  email: email,
-                  career: null,
-                })
+                .set(userDetails)
                 .then((doc) => {
-                  localStorage.setItem("user_id", userCredentials.user.uid);
+                  localStorage.setItem("user", JSON.stringify(userDetails));                  
                   history.push("/home");
                 })
                 .catch((err) => {
