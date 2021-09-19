@@ -5,10 +5,10 @@ import {
   IconButton,
   Button,
   Container,
-  Typography,
 } from "@material-ui/core";
-import NotificationIcon from "@material-ui/icons/Notifications";
+import { ExitToApp } from "@material-ui/icons";
 import useStyle from "./styles";
+import logo from "../../../assets/images/full-logo.png"
 
 const Presentation = (props) => {
   const classes = useStyle();
@@ -17,15 +17,13 @@ const Presentation = (props) => {
     <div>
       <AppBar position="static">
         <Toolbar className={classes.toolbar}>
-          <div>
-            <Typography variant="h4" display="inline">
-              LOGO
-            </Typography>
+          <div style={{display: "flex"}}>            
+            <img src={logo} width="160" height="50" alt="Hubbl Logo"/>
             <Button color="inherit">Materias</Button>
             <Button color="inherit">Perfil</Button>
           </div>
           <IconButton color="inherit">
-            <NotificationIcon />
+            <ExitToApp />
           </IconButton>
         </Toolbar>
       </AppBar>
