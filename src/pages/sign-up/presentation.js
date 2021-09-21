@@ -2,6 +2,7 @@ import React from "react";
 import {
   Avatar,
   Button,
+  CircularProgress,
   CssBaseline,
   TextField,
   Link,
@@ -9,6 +10,7 @@ import {
   Typography,
   Container,
 } from "@material-ui/core";
+import Snackbar from "../../components/snackbar";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import useStyles from "./styles";
 
@@ -84,15 +86,20 @@ const Presentation = (props) => {
               />
             </Grid>
           </Grid>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            Registrarse
-          </Button>
+          {props.isLoading ? (
+            <CircularProgress />
+          ) : (
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+            >
+              Registrarse
+            </Button>
+          )}
+
           <Grid container justify="flex-end">
             <Grid item>
               <Link href="login" variant="body2">
@@ -102,6 +109,13 @@ const Presentation = (props) => {
           </Grid>
         </form>
       </div>
+      {props.error && (
+        <Snackbar
+          open={props.error != null}
+          severity="error"
+          text={props.error}
+        />
+      )}
     </Container>
   );
 };

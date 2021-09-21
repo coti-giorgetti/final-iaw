@@ -4,6 +4,7 @@ import Login from "./pages/login";
 import SignUp from "./pages/sign-up";
 import Profile from "./pages/profile";
 import HomeLayout from "./components/layouts/home-layout";
+import Home from "./pages/home";
 
 function App() {
   return (
@@ -16,10 +17,12 @@ function App() {
           <Route path="/register">
             <SignUp />
           </Route>
-          <HomeLayout>
-            <Route path="/home"></Route>
+          <HomeLayout>            
             <Route path="/profile">
               <Profile />
+            </Route>
+            <Route path="/home">
+              <Home />
             </Route>
           </HomeLayout>
         </Switch>
