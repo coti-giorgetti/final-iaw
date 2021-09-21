@@ -50,22 +50,34 @@ const useStyles = makeStyles((theme) => ({
   }));
 
 const Subject = ({subject,getUsers}) => {    
-    const [isToggleOn, setToggleOn] = useState(true);
     const [usersBySubject,setUsersBySubject] = useState(undefined);    
+    const [isToggleOn, setToggleOn] = useState(true);
+
+    const classes = useStyles();
+
+    const loadInitialData = (users) => { 
+        const loggedUser = JSON.parse(localStorage.getItem("user"));
+        const userEmail = loggedUser.email;
+        users.length > 0 ?
+            (users.some( user => user['email'] === userEmail )) ?
+                setToggleOn(!isToggleOn) 
+                : setToggleOn(isToggleOn)
+            : setToggleOn(isToggleOn)
+    }
 
     const handleClickModal = () => {        
         getUsers(subject.key).then(
-            users => setUsersBySubject(users)
+            users => {setUsersBySubject(users)
+            loadInitialData(users)}
         );
     }
-
-    const classes = useStyles();
     
     const handleClick = () => {
+        const user = JSON.parse(localStorage.getItem("user"));
         const loggedUser = {
-            firstName: "coti",
-            lastName: "giorgetti",
-            email: "coti.malibu2@gmail.com"
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email
         };
 
         if(isToggleOn){
@@ -123,39 +135,38 @@ const Subject = ({subject,getUsers}) => {
                 <AccordionDetails className={classes.accordionDetails}>
                     <div className={classes.accordionDetailsHeader}>
                         <div className={classes.chips}>                            
-                            {subject.careers.map(career => <Chip label={career === 1 ? 'LCC' : career === 2 ? 'ISI' : 'IC'} className={[classes.chip, career === 1 ? classes.chipLCC : career === 2 ? classes.chipISI : classes.chipIC]}/>)}                        
+                            {subject.careers.map((career, index) => <Chip label={career === 1 ? 'LCC' : career === 2 ? 'ISI' : 'IC'} className={[classes.chip, career === 1 ? classes.chipLCC : career === 2 ? classes.chipISI : classes.chipIC]} key={index}/>)}                        
                         </div>
                         <IconButton onClick={handleClick} color="inherit">
                             {isToggleOn ? 
-                            <Tooltip title="Postularme" placement="top-start">
-                                <PersonAdd />
-                            </Tooltip> : 
-                            <Tooltip title="Quitar postulacion" placement="top-start">
-                                <PersonAddDisabled />
-                            </Tooltip>}
+                                <Tooltip title="Postularme" placement="top-start">
+                                    <PersonAdd />
+                                </Tooltip> : 
+                                <Tooltip title="Quitar postulacion" placement="top-start">
+                                    <PersonAddDisabled />
+                                </Tooltip>
+                            }
                         </IconButton>
                     </div>
-                    <Typography>
                         {usersBySubject ? 
                             usersBySubject.length > 0  
-                                ? <ul>{usersBySubject.map(user => <li><User user={user} /></li>)}</ul>
+                                ? <ul>{usersBySubject.map((user, index) => <li><User user={user} subject={subject} key={index}/></li>)}</ul>
                                 : "No hay alumnos"
                             : 'Cargando...'
                         }
-                    </Typography>
                 </AccordionDetails>
         </Accordion>
     </div>
     )
 }
 
-const User = ({user}) => {
+const User = ({user, subject}) => {
     const classes = useStyles();
-
+    const loggedUser = JSON.parse(localStorage.getItem('user'));
     return (
         <Typography className={classes.userDetails}>
-            {user.firstName} {user.lastName} {user.email}
-        </Typography> 
+            {user.firstName}  {user.lastName}  <a href={`mailto:${user.email}?subject=Hubbl-Quiero estudiar con vos para ${subject.name}!&body=Hey! Este es un mail desde Hubbl. Mi nombre es ${loggedUser.firstName} ${loggedUser.lastName} y me gustaria estudiar con vos. Mi mail de contacto es ${loggedUser.email} para poder coordinar. Que tengas un buen día! Saludos!! :)`} target="_blank" rel="noopener noreferrer"> ({user.email}) </a>
+        </Typography>
     )
 }
 
