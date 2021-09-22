@@ -62,7 +62,7 @@ const Presentation = (props) => {
           </Button>
           <Grid container>
             <Grid item xs>
-              <Link href="#" variant="body2">
+              <Link href="forgotPassword" variant="body2">
                 Olvidé mi contraseña
               </Link>
             </Grid>

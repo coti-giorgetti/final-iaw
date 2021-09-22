@@ -8,6 +8,7 @@ const Home = () => {
     const [loading, setLoading] = useState(true);
     const [subjects,setSubjects] = useState([]);
 
+
     useEffect(() => {
         const getSubjectsFromFirebase = [];
         const subscriber = firestore
@@ -21,7 +22,7 @@ const Home = () => {
             });
             return () => subscriber();
     },[]);
-    
+
     if(loading) {
         return (
             <CircularProgress />

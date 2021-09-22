@@ -6,7 +6,7 @@ import Header from './header'
 const useStyles = makeStyles((theme) => ({
     root: {
         minHeight: '100vh',
-        backgroundColor: 'gray',
+        backgroundColor: theme.palette.primary.main,
         backgroundSize: 'cover'
 
     }

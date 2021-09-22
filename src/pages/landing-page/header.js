@@ -60,8 +60,8 @@ export default function Header(){
                     Conectate y estudiá ya! 
                 </p>
                 <div className={classes.buttons}>
-                    <Button href="/login" color="primary" size="large">Iniciar sesión</Button>
-                    <Button href="/register" color="primary" size="large">Registrarme</Button>
+                    <Button href="/login" color="default" size="large">Iniciar sesión</Button>
+                    <Button href="/register" color="default" size="large">Registrarme</Button>
                 </div>
             </div>
         </div>
