@@ -2,13 +2,13 @@ import React, {useState} from 'react';
 import Subjects from './Subjects';
 import SearchBox from './SearchBox';
 
-const Presentation = (subjects) => { 
+const Presentation = ({subjects}) => { 
 
     const filterSubjects = (subjects, query) => {
         if(!query){
-            return subjects.subjects;
+            return subjects;
         }
-        return subjects.subjects.filter((subject) => {
+        return subjects.filter((subject) => {
             const subjectName = subject.name.toLowerCase();
             return subjectName.includes(query);
         });

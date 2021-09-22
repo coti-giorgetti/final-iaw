@@ -1,42 +1,28 @@
-import React from "react";
+import React, {useState} from "react";
 import Presentation from "./presentation";
+import {firestore} from "../../config/firebase";
 
 const Profile = () => {
-  const [activeTab, setActiveTab] = React.useState(0);
-  const [meetings, setMeetings] = React.useState([]);
+  const [activeTab, setActiveTab] = useState(0);
 
-  const handleTabChange = (_event, newValue) => {
-    setActiveTab(newValue);
-  };
-
-  React.useEffect(() => {
-    const data = [
-      {
-        date: new Date(2012, 2, 12),
-        user: "Manuela Fernandez",
-        subject: "Resolución de problemas y algoritmos",
-      },
-      {
-        date: new Date(2012, 3, 12),
-        user: "Federico Virkel",
-        subject: "Lenguajes formales y autómatas",
-      },
-      {
-        date: new Date(2013, 9, 20),
-        user: "Micaela Melo",
-        subject: "Teoría de la computabilidad",
-      },
-    ];
-
-    setMeetings(data);
-  }, []);
+  const getUsersBySubject = (id) => {  
+    return firestore.collection('Users').doc(id).get().then(      
+        doc => doc.ref.collection('Subjects').get().then(
+            collection => {
+              const subjectFromUser = [];
+              collection.forEach(
+                subj => {                
+                  subjectFromUser.push({...subj.data()});
+                }                
+              );
+              return subjectFromUser;
+            }
+          )        
+      )   
+  }
 
   return (
-    <Presentation
-      onTabChange={handleTabChange}
-      activeTab={activeTab}
-      meetings={meetings}
-    />
+   <Presentation getSubjects={getUsersBySubject} activeTab={activeTab} />
   );
 };
 

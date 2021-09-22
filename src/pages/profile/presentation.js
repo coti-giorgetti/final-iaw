@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState, useEffect} from "react";
 import {
   AppBar,
   Avatar,
@@ -8,14 +8,28 @@ import {
   Tab,
   Tabs,
   Typography,
-  Hidden,
+  CircularProgress,
 } from "@material-ui/core";
-import { History, Star } from "@material-ui/icons";
+import {History} from "@material-ui/icons";
 import profileStyles from "./styles";
 import TabPanel from "../../components/tabPanel";
 
-const Presentation = (props) => {
+const Presentation = ({getSubjects, activeTab}) => {
+  const [subjects, setSubjects] = useState([])
+  const [loading, setLoading] = useState(true)
   const classes = profileStyles();
+ 
+  useEffect(() => {
+    const loadSubjects = () => {
+      const loggedUser = JSON.parse(localStorage.getItem('user'));
+      const userId = loggedUser.id;
+      getSubjects(userId).then(
+        subj => {setSubjects(subj)
+            setLoading(false)
+        }
+    )};
+    loadSubjects()
+  }, [])
 
   return (
     <Container maxWidth="xl" className={classes.container}>
@@ -25,74 +39,54 @@ const Presentation = (props) => {
         </Grid>
         <Grid item md={9}>
           <AppBar position="static">
-            <Tabs
-              value={props.activeTab}
-              onChange={props.onTabChange}
+            <Tabs 
+              value={activeTab}
               variant="fullWidth"
             >
-              <Tab label="Reuniones" icon={<History />} />
-              <Tab label="Recomendaciones" icon={<Star />} />
+              <Tab label="Mis Postulaciones activas" icon={<History />} />
             </Tabs>
           </AppBar>
-          <TabPanel value={props.activeTab} index={0}>
-            {props.meetings.length > 0 ? (
-              props.meetings.map((meeting) => <MeetingCard data={meeting} />)
-            ) : (
-              <Typography>Sin reuniones por el momento.</Typography>
-            )}
-          </TabPanel>
-          <TabPanel value={props.activeTab} index={1}>
-            <Typography>Sin recomendaciones por el momento.</Typography>
+          <TabPanel value={activeTab} index={0}>
+              { (loading)
+                  ? <CircularProgress />
+                  : (subjects.length>0)
+                    ? subjects.map((subject) => <SubjectCard data={subject} key={subject.code} />)
+                    : <b>Sin postulaciones por el momento.</b>
+              }
           </TabPanel>
         </Grid>
       </Grid>
     </Container>
   );
-};
+}
 
 const ProfileCard = () => {
   const classes = profileStyles();
+  const loggedUser = JSON.parse(localStorage.getItem('user'));
+  const firstName = loggedUser.firstName;
+  const lastName = loggedUser.lastName;
   return (
     <Paper elevation={3} className={classes.paper}>
-      <Avatar className={classes.avatar}>CG</Avatar>
-      <Typography variant="h5">
-        <b>Constanza Giorgetti</b>
+      <Avatar className={classes.avatar}>{firstName.charAt(0)}{lastName.charAt(0)}</Avatar>
+      <Typography component={'span'} variant="h5">
+        <b> {firstName} {lastName}</b>
       </Typography>
-      <Typography>Ingeniería en Sistemas de Información</Typography>
+      <Typography component={'span'}>{loggedUser.email}</Typography>
     </Paper>
   );
 };
 
-const MeetingCard = ({ data }) => {
+const SubjectCard = ({ data }) => {
   const classes = profileStyles();
   return (
     <Paper>
       <div className={classes.meetingCard}>
-        <Hidden mdDown>
-          <Avatar
-            className={classes.meetingAvatar}
-            style={{ backgroundColor: randomColor() }}
-          >
-            {data.subject.charAt(0)}
-          </Avatar>
-        </Hidden>
         <div className={classes.meetingInfo}>
-          <Typography>
-            <b>{data.subject}</b>
-          </Typography>
-          <Typography>{data.user}</Typography>
+            <b>{data.name} ({data.code})</b>
         </div>
-        <Typography className={classes.meetingDate}>
-          {data.date.getDate()}/{data.date.getMonth()}/{data.date.getFullYear()}
-        </Typography>
       </div>
     </Paper>
   );
-};
-
-const randomColor = () => {
-  let hex = Math.floor(Math.random() * 0xffffff);
-  return "#" + hex.toString(16);
 };
 
 export default Presentation;
