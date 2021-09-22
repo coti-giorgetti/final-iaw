@@ -71,20 +71,43 @@ const Subject = ({subject,getUsers}) => {
             loadInitialData(users)}
         );
     }
-    
+
+    const addSubjectToUser = (id) => {
+        const subjectData = {
+            name: subject.name,
+            code: subject.code
+        }
+        firestore.collection('Users').doc(id).get().then(
+            doc => doc.ref.collection('Subjects').add(subjectData)
+        );
+    }
+
+    const deleteSubjectToUser = (id) => {
+        firestore.collection('Users').doc(id).get().then(
+            doc => {
+                doc.ref.collection('Subjects').where('code', '==', subject.code).get().then(
+                    subjects => subjects.forEach(s => s.ref.delete())
+                );                
+            }
+        );        
+    }
+
     const handleClick = () => {
         const user = JSON.parse(localStorage.getItem("user"));
         const loggedUser = {
             firstName: user.firstName,
             lastName: user.lastName,
-            email: user.email
+            email: user.email,
+            id: user.id
         };
 
         if(isToggleOn){
             addUser(subject.key, loggedUser)
+            addSubjectToUser(loggedUser.id)
         }
         else { 
             deleteUser(subject.key, loggedUser)
+            deleteSubjectToUser(loggedUser.id)
         }
         setToggleOn(!isToggleOn);
     }
