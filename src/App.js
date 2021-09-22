@@ -4,12 +4,16 @@ import Login from "./pages/login";
 import SignUp from "./pages/sign-up";
 import HomeLayout from "./components/layouts/home-layout";
 import Home from "./pages/home";
+import LandingPage from './pages/landing-page/landingPage'
 
 function App() {
   return (
     <div className="App">
       <Router>
         <Switch>
+          <Route path="/">
+            <LandingPage />
+          </Route>
           <NotLoggedRoute path="/login">
             <Login />
           </NotLoggedRoute>
