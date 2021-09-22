@@ -14,41 +14,36 @@ function App() {
     <div className="App">
       <Router>
         <Switch>
-          <Route path="/welcome">
-            <LandingPage />
-          </Route>
           <NotLoggedRoute path="/login">
             <Login />
           </NotLoggedRoute>
           <NotLoggedRoute path="/register">
             <SignUp />
           </NotLoggedRoute>
-          <Route path="/forgotPassword">
+          <NotLoggedRoute path="/forgotPassword">
             <ForgotPassword />
-          </Route>
-          <Route path="/resetPassword">
+          </NotLoggedRoute>
+          <NotLoggedRoute path="/resetPassword">
             <ResetPassword />
+          </NotLoggedRoute>
+          <PrivateRoute component={Home} layout={HomeLayout} path="/home"/>
+          <PrivateRoute component={Profile} layout={HomeLayout} path="/profile"/>
+          <Route exact path="/">
+            <LandingPage />
           </Route>
-          <HomeLayout>
-            <PrivateRoute path="/home">
-              <Home />
-            </PrivateRoute>
-          
-            <PrivateRoute path="/profile">
-              <Profile />
-            </PrivateRoute>          
-          </HomeLayout>
         </Switch>
       </Router>
     </div>
   );
 }
 
-const PrivateRoute = ({children, ...rest}) => {  
+const PrivateRoute = ({component: Component, layout: Layout, ...rest}) => {  
   return (
     <Route 
       {...rest}
-      render={() => isAuthenticated() ? children : <Redirect to={{pathname: '/login'}}/>}
+      render={(props) => isAuthenticated() 
+        ? <Layout {...props}> <Component {...props}/> </Layout>
+        : <Redirect to={{pathname: '/login'}}/>}
     />
   )
 }
