@@ -19,8 +19,8 @@ const Presentation = (props) => {
         <Toolbar className={classes.toolbar}>
           <div style={{display: "flex"}}>            
             <img src={logo} width="160" height="50" alt="Hubbl Logo"/>
-            <Button color="inherit">Materias</Button>
-            <Button color="inherit">Perfil</Button>
+            <Button color="inherit" href="/home">Materias</Button>
+            <Button color="inherit" href="/profile">Perfil</Button>
           </div>
           <IconButton color="inherit" onClick={props.logout}>
             <ExitToApp />

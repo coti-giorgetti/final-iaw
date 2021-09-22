@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-d
 import "./App.css";
 import Login from "./pages/login";
 import SignUp from "./pages/sign-up";
+import Profile from "./pages/profile";
 import HomeLayout from "./components/layouts/home-layout";
 import Home from "./pages/home";
 import LandingPage from './pages/landing-page/landingPage'
@@ -11,7 +12,7 @@ function App() {
     <div className="App">
       <Router>
         <Switch>
-          <Route path="/">
+          <Route path="/welcome">
             <LandingPage />
           </Route>
           <NotLoggedRoute path="/login">
@@ -24,6 +25,10 @@ function App() {
             <PrivateRoute path="/home">
               <Home />
             </PrivateRoute>
+          
+            <PrivateRoute path="/profile">
+              <Profile />
+            </PrivateRoute>          
           </HomeLayout>
         </Switch>
       </Router>
