@@ -73,7 +73,6 @@ const Presentation = (props) => {
             </Grid>
           </Grid>
         </form>
-        {props.signedIn && <h1>Bienvenida!</h1>}
       </div>
     </Container>
   );

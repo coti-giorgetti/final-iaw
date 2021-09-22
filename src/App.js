@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 import "./App.css";
 import Login from "./pages/login";
 import SignUp from "./pages/sign-up";
@@ -14,21 +14,43 @@ function App() {
           <Route path="/">
             <LandingPage />
           </Route>
-          <Route path="/login">
+          <NotLoggedRoute path="/login">
             <Login />
-          </Route>
-          <Route path="/register">
+          </NotLoggedRoute>
+          <NotLoggedRoute path="/register">
             <SignUp />
-          </Route>
+          </NotLoggedRoute>
           <HomeLayout>
-            <Route path="/home">
+            <PrivateRoute path="/home">
               <Home />
-            </Route>
+            </PrivateRoute>
           </HomeLayout>
         </Switch>
       </Router>
     </div>
   );
+}
+
+const PrivateRoute = ({children, ...rest}) => {  
+  return (
+    <Route 
+      {...rest}
+      render={() => isAuthenticated() ? children : <Redirect to={{pathname: '/login'}}/>}
+    />
+  )
+}
+
+const NotLoggedRoute = ({children, ...rest}) => {  
+  return (
+    <Route 
+      {...rest}
+      render={() => !isAuthenticated() ? children : <Redirect to={{pathname: '/home'}}/>}
+    />
+  )
+}
+
+const isAuthenticated = () => {
+  return localStorage.getItem('user') ? true : false;
 }
 
 export default App;

@@ -22,7 +22,7 @@ const Presentation = (props) => {
             <Button color="inherit">Materias</Button>
             <Button color="inherit">Perfil</Button>
           </div>
-          <IconButton color="inherit">
+          <IconButton color="inherit" onClick={props.logout}>
             <ExitToApp />
           </IconButton>
         </Toolbar>

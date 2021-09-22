@@ -135,7 +135,7 @@ const Subject = ({subject,getUsers}) => {
                 <AccordionDetails className={classes.accordionDetails}>
                     <div className={classes.accordionDetailsHeader}>
                         <div className={classes.chips}>                            
-                            {subject.careers.map((career, index) => <Chip label={career === 1 ? 'LCC' : career === 2 ? 'ISI' : 'IC'} className={[classes.chip, career === 1 ? classes.chipLCC : career === 2 ? classes.chipISI : classes.chipIC]} key={index}/>)}                        
+                            {subject.careers.map((career, index) => <Chip label={career === 1 ? 'LCC' : career === 2 ? 'ISI' : 'IC'} className={`${classes.chip} ${career === 1 ? classes.chipLCC : career === 2 ? classes.chipISI : classes.chipIC}`} key={index}/>)}                        
                         </div>
                         <IconButton onClick={handleClick} color="inherit">
                             {isToggleOn ? 
@@ -150,7 +150,7 @@ const Subject = ({subject,getUsers}) => {
                     </div>
                         {usersBySubject ? 
                             usersBySubject.length > 0  
-                                ? <ul>{usersBySubject.map((user, index) => <li><User user={user} subject={subject} key={index}/></li>)}</ul>
+                                ? <ul>{usersBySubject.map((user, index) => <li key={index}><User user={user} subject={subject} key={user.email}/></li>)}</ul>
                                 : "No hay alumnos"
                             : 'Cargando...'
                         }

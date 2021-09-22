@@ -20,7 +20,7 @@ const Subjects = ({filteredSubjects}) => {
   }
 
   return (
-    filteredSubjects.map(subject => <Subject subject={subject} getUsers={getUsersBySubject} key={subject.key} />)
+    filteredSubjects.map(subject => <Subject subject={subject} getUsers={getUsersBySubject} key={subject.code} />)
   )
 }
 

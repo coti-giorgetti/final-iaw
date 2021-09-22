@@ -6,7 +6,6 @@ import { useHistory } from "react-router-dom";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [signedIn, setSignedIn] = useState(false);
   const history = useHistory();
 
   const login = async (event) => {
@@ -29,10 +28,10 @@ const Login = () => {
               career: null,
             };
             localStorage.setItem("user", JSON.stringify(userDetails));
+            
+            history.push("/home");            
           })
-        )        
-        history.push("/home");
-        setSignedIn(true);
+        )                
       }
     } catch (error) {
       console.log(error);
@@ -43,8 +42,7 @@ const Login = () => {
     <Presentation
       setEmail={setEmail}
       setPassword={setPassword}
-      handleSubmit={login}
-      signedIn={signedIn}
+      handleSubmit={login}      
     />
   );
 };
